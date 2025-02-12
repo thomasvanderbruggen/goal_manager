@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goal_manager/models/goal_metrics.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/goal_model.dart';
@@ -17,6 +18,8 @@ class _GoalDetailed extends State<GoalDetailed> {
     var appState = context.watch<MyAppState>();
 
     GoalModel selectedGoal = appState.selectedGoal;
+
+    var metrics = showMetrics(selectedGoal); 
 
     return Scaffold(
       appBar: AppBar(title: Text('Goals')),
@@ -95,9 +98,31 @@ class _GoalDetailed extends State<GoalDetailed> {
               },
             ),
           ),
+          selectedGoal.metrics == null ? Text("Add a goal!") : SizedBox(height: 300,
+            child: ListView(children: [
+            for (var metric in selectedGoal.metrics!) Text(metric.title)
+          ],)),
+          
         ]),
       ),
     );
+  }
+
+  List<Widget> showMetrics (GoalModel g) {
+    List<Widget> widgets = [];
+
+    
+    if (g.metrics == null) {
+      widgets.add(Flexible(child: Text("This goal doesn't have any metrics, add one!"))); 
+      return widgets; 
+    }
+
+    for (GoalMetrics gm in g.metrics!) {
+      widgets.add(Flexible(child: Text(gm.title))); 
+    }
+
+    return widgets; 
+
   }
 
   Future<DateTime?> _selectedDate() async {
