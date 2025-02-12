@@ -1,16 +1,10 @@
-# goal_manager
+# Goal Manager
 
-A new Flutter project.
+A Flutter project designed to help me keep track of my goals and habits that I want to achieve and build. 
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+ The goal is: 
+- Set a theme [Loosely based on this idea from CGP Grey](https://www.youtube.com/watch?v=NVGuFdX5guE)
+- Add goals that living to the theme will accomplish
+- Set metrics to track those goals
+- Add tasks that can have reminder notifications
+- Journaling and note taking section

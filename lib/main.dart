@@ -2,12 +2,15 @@ import 'dart:io';
 
 import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:goal_manager/views/all.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import 'models/goal_model.dart';
+import 'views/all.dart';
+import 'utilities/db_context.dart';
+
 void main() {
-    if (Platform.isWindows || Platform.isLinux) {
+  if (Platform.isWindows || Platform.isLinux) {
     // Initialize FFI
     sqfliteFfiInit();
   }
@@ -37,10 +40,16 @@ class MyApp extends StatelessWidget {
 }
 
 class MyAppState extends ChangeNotifier {
-  var selectedPage = 0; 
+  var selectedPage = 0;
+  DBContext db = DBContext.instance;
+  late GoalModel selectedGoal;
 
   void setSelectedPage(int page) {
     selectedPage = page;
+    notifyListeners();
+  }
+
+  void refresh() {
     notifyListeners();
   }
 }
@@ -54,53 +63,58 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var selectedIndex = appState.selectedPage; 
-    Widget page; 
+    var selectedIndex = appState.selectedPage;
+    Widget page;
     switch (selectedIndex) {
-      case 0: 
-      page = DefaultPage(); break;
-      case 1: 
-      page = TasksPage(); break;
-      case 2: 
-      page = GoalsPage(); break;
+      case 0:
+        page = DefaultPage();
+        break;
+      case 1:
+        page = TasksPage();
+        break;
+      case 2:
+        page = GoalsPage();
+        break;
+      case 3:
+        page = GoalDetailed();
+        break;
       default:
         throw UnimplementedError('No widget for $selectedIndex');
     }
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Scaffold(
-          body: Row(
-            children: [
-              SafeArea(
-                child: NavigationRail(
-                  extended: constraints.maxWidth >= 600,
-                  destinations: [
-                    NavigationRailDestination(
-                      icon: Icon(Icons.home),
-                      label: Text('Home'),
-                    ),
-                    NavigationRailDestination(
-                      icon: Icon(Icons.favorite),
-                      label: Text('Favorites'),
-                    ),
-                    NavigationRailDestination(icon: Icon(Icons.sports_score), label: Text('Goals'))
-                  ],
-                  selectedIndex: selectedIndex,
-                  onDestinationSelected: (value) {
-                    appState.setSelectedPage(value); 
-                  },
-                ),
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
+          children: [
+            SafeArea(
+              child: NavigationRail(
+                extended: constraints.maxWidth >= 600,
+                destinations: [
+                  NavigationRailDestination(
+                    icon: Icon(Icons.home),
+                    label: Text('Home'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.favorite),
+                    label: Text('Favorites'),
+                  ),
+                  NavigationRailDestination(
+                      icon: Icon(Icons.sports_score), label: Text('Goals'))
+                ],
+                selectedIndex: selectedIndex == 3 ? 2 : selectedIndex,
+                onDestinationSelected: (value) {
+                  appState.setSelectedPage(value);
+                },
               ),
-              Expanded(
-                child: Container(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  child: page,
-                ),
+            ),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: page,
               ),
-            ],
-          ),
-        );
-      }
-    );
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

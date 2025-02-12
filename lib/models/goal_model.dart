@@ -1,48 +1,31 @@
 
-import 'package:flutter/material.dart';
+import 'package:goal_manager/models/goal_metrics.dart';
 
 class GoalModel {
   int? id;
   String title; 
   String description; 
-  List<String> metrics; 
+  List<GoalMetrics>? metrics; 
   DateTime goalDate; 
-  String goalType; 
+  DateTime stretchDate;
+  DateTime? completeDate;
+  String? goalType; 
 
-  GoalModel(this.id, this.title, this.description, this.metrics, this.goalDate, this.goalType); 
+  GoalModel(this.id, this.title, this.description, this.metrics, this.goalDate, this.stretchDate, this.completeDate, this.goalType); 
+
+  GoalModel.appGen(this.title, this.description, this.metrics, this.goalDate, this.stretchDate, this.completeDate, this.goalType);
+
 
   Map<String, Object?> toDB() { 
-    
-    var metricsCSV = ''; 
-    for (var m in metrics) {
-      metricsCSV += '$m,'; 
-    }
-    metricsCSV = metricsCSV.substring(0, metricsCSV.length - 1); 
-    var gdString = goalDate.toIso8601String();  
     return  {
       'id': id, 
       'title': title, 
       'description': description,
-      'metrics': metricsCSV, 
-      'goalDate': gdString,
+      'goalDate': goalDate.toIso8601String(),
+      'stretchDate': stretchDate.toIso8601String(), 
+      'completeDate': completeDate?.toIso8601String(),
       'goalType': goalType
     };
   }
-
-  static List<GoalModel> fromDBMultiple(List<Map<String, dynamic>> dbRes) {
-    List<GoalModel> out = []; 
-    for (var res in dbRes){
-      out.add(fromDBSingle(res)); 
-    }
-    return out;
-  }
-
-  static GoalModel fromDBSingle(Map<String, dynamic> dbRes) {
-    var gdDT = DateTime.parse(dbRes['goalDate']); 
-    var metricsList = dbRes['metrics'].split(','); 
-
-    return GoalModel(dbRes['id'], dbRes['title'], dbRes['description'], metricsList, gdDT, dbRes['goalType']); 
-  }
-
 
 }
