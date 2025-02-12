@@ -17,8 +17,7 @@ class GoalsPage extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             return allGoalsDisplay(snapshot.data, appState);
-          }
-          else {
+          } else {
             return CircularProgressIndicator(
               backgroundColor: Colors.black,
               color: Colors.white,
@@ -38,31 +37,31 @@ class GoalsPage extends StatelessWidget {
   Scaffold allGoalsDisplay(List<GoalModel>? allGoals, MyAppState appState) {
     return Scaffold(
         appBar: AppBar(title: Text('Goals')),
-        body: allGoals == null ? Container(
-          height: 300,
-          width: 300,
-          child: Text("Add a goal to get started!"),
-        ) :        
-          ListView(children: [
-          for (var g in allGoals)
-            ElevatedButton(
-              onPressed: () {
-                appState.selectedGoal = g;
-                appState.setSelectedPage(3);
-              },
-              child: Text(g.title),
-            )
-        ]),
+        body: allGoals == null
+            ? Container(
+                height: 300,
+                width: 300,
+                child: Text("Add a goal to get started!"),
+              )
+            : ListView(children: [
+                for (var g in allGoals)
+                  ElevatedButton(
+                    onPressed: () {
+                      appState.selectedGoal = g;
+                      appState.setSelectedPage(3);
+                    },
+                    child: Text(g.title),
+                  )
+              ]),
         floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {
-            //appState.db.resetDatabase().then((value) { appState.refresh(); },
-             appState.db.insertTestData().then( (value) {
-               appState.refresh();
-             }
-            );
-          // appState.db.insertGoal(GoalModel.appGen('Title', 'Description', ['1,2,3'], DateTime.now(), 'Monthly'));
-          // appState.refresh();
-        }));
+            child: Icon(Icons.add),
+            onPressed: () {
+              //appState.db.resetDatabase().then((value) { appState.refresh(); },
+              appState.db.insertTestData().then((value) {
+                appState.refresh();
+              });
+              // appState.db.insertGoal(GoalModel.appGen('Title', 'Description', ['1,2,3'], DateTime.now(), 'Monthly'));
+              // appState.refresh();
+            }));
   }
 }

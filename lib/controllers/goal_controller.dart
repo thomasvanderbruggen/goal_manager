@@ -1,11 +1,9 @@
 import '../models/goal_metrics.dart';
 import '../models/goal_model.dart';
-import '../utilities/db_context.dart';
-import 'goal_metric_controller.dart';
 
 class GoalController {
-  static GoalModel buildGoalModel(Map<String, dynamic?> goalFromDB,
-      List<GoalMetrics>? metrics) {
+  static GoalModel buildGoalModel(
+      Map<String, dynamic> goalFromDB, List<GoalMetrics>? metrics) {
     GoalModel g;
 
     if (goalFromDB['completeDate'] == null) {

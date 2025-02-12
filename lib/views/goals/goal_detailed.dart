@@ -19,23 +19,22 @@ class _GoalDetailed extends State<GoalDetailed> {
 
     GoalModel selectedGoal = appState.selectedGoal;
 
-    var metrics = showMetrics(selectedGoal); 
+    var metrics = showMetrics(selectedGoal);
 
     return Scaffold(
       appBar: AppBar(title: Text('Goals')),
       body: Center(
         child: Column(children: [
           Padding(
-            padding: const EdgeInsets.all(8.0), 
-            child: TextFormField(
-              decoration: TextFieldDecorator('Goal'),
-              initialValue: selectedGoal.title,
-              onChanged: (newString) {
-                setState(() {
-                  selectedGoal.title = newString;
-                });
-              }
-            )
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                  decoration: TextFieldDecorator('Goal'),
+                  initialValue: selectedGoal.title,
+                  onChanged: (newString) {
+                    setState(() {
+                      selectedGoal.title = newString;
+                    });
+                  })
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -60,7 +59,8 @@ class _GoalDetailed extends State<GoalDetailed> {
                         }
                       });
                     },
-                    child: Text('Goal Date: ${selectedGoal.goalDate.toString()}')),
+                    child:
+                        Text('Goal Date: ${selectedGoal.goalDate.toString()}')),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -72,7 +72,8 @@ class _GoalDetailed extends State<GoalDetailed> {
                         }
                       });
                     },
-                    child: Text('Goal Date: ${selectedGoal.stretchDate.toString()}')),
+                    child: Text(
+                        'Goal Date: ${selectedGoal.stretchDate.toString()}')),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -84,7 +85,8 @@ class _GoalDetailed extends State<GoalDetailed> {
                         }
                       });
                     },
-                    child: Text('Completed Date: ${selectedGoal.completeDate == null ? 'Uncompleted' : selectedGoal.completeDate.toString()}')),
+                    child: Text(
+                        'Completed Date: ${selectedGoal.completeDate == null ? 'Uncompleted' : selectedGoal.completeDate.toString()}')),
               ),
             ],
           ),
@@ -98,31 +100,39 @@ class _GoalDetailed extends State<GoalDetailed> {
               },
             ),
           ),
-          selectedGoal.metrics == null ? Text("Add a goal!") : SizedBox(height: 300,
-            child: ListView(children: [
-            for (var metric in selectedGoal.metrics!) Text(metric.title)
-          ],)),
-          
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: selectedGoal.metrics == null
+                ? Text("Add a goal!")
+                : SizedBox(
+                    height: 300,
+                    child: ListView(
+                      children: [
+                        for (var metric in selectedGoal.metrics!)
+                          Text(metric.title)
+                      ],
+                    )
+              ),
+          ),
         ]),
       ),
     );
   }
 
-  List<Widget> showMetrics (GoalModel g) {
+  List<Widget> showMetrics(GoalModel g) {
     List<Widget> widgets = [];
 
-    
     if (g.metrics == null) {
-      widgets.add(Flexible(child: Text("This goal doesn't have any metrics, add one!"))); 
-      return widgets; 
+      widgets.add(Flexible(
+          child: Text("This goal doesn't have any metrics, add one!")));
+      return widgets;
     }
 
     for (GoalMetrics gm in g.metrics!) {
-      widgets.add(Flexible(child: Text(gm.title))); 
+      widgets.add(Flexible(child: Text(gm.title)));
     }
 
-    return widgets; 
-
+    return widgets;
   }
 
   Future<DateTime?> _selectedDate() async {

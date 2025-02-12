@@ -1,10 +1,7 @@
 import 'dart:io';
-
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
 import 'models/goal_model.dart';
 import 'views/all.dart';
 import 'utilities/db_context.dart';
