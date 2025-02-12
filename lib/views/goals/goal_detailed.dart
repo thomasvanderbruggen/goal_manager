@@ -6,7 +6,7 @@ import '../../models/goal_model.dart';
 import '../../main.dart';
 
 class GoalDetailed extends StatefulWidget {
-  const GoalDetailed({Key? key}) : super(key: key);
+  const GoalDetailed({super.key});
 
   @override
   State<GoalDetailed> createState() => _GoalDetailed();
@@ -145,7 +145,7 @@ class _GoalDetailed extends State<GoalDetailed> {
   InputDecoration TextFieldDecorator(String field) {
     return InputDecoration(
       border: OutlineInputBorder(),
-      labelText: '$field',
+      labelText: field
     );
   }
 }

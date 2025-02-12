@@ -52,6 +52,8 @@ class MyAppState extends ChangeNotifier {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -65,16 +67,12 @@ class _MyHomePageState extends State<MyHomePage> {
     switch (selectedIndex) {
       case 0:
         page = DefaultPage();
-        break;
       case 1:
         page = TasksPage();
-        break;
       case 2:
         page = GoalsPage();
-        break;
       case 3:
         page = GoalDetailed();
-        break;
       default:
         throw UnimplementedError('No widget for $selectedIndex');
     }

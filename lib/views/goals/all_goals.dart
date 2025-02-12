@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite/sqflite.dart';
 import '../../main.dart';
 import '../../models/goal_model.dart';
-import '../../utilities/db_context.dart';
 
 class GoalsPage extends StatelessWidget {
+  const GoalsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
@@ -38,7 +38,7 @@ class GoalsPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(title: Text('Goals')),
         body: allGoals == null
-            ? Container(
+            ? SizedBox(
                 height: 300,
                 width: 300,
                 child: Text("Add a goal to get started!"),
