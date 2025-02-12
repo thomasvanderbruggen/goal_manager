@@ -19,9 +19,21 @@ class _GoalDetailed extends State<GoalDetailed> {
     GoalModel selectedGoal = appState.selectedGoal;
 
     return Scaffold(
-      appBar: AppBar(title: Text(selectedGoal.title)),
+      appBar: AppBar(title: Text('Goals')),
       body: Center(
         child: Column(children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0), 
+            child: TextFormField(
+              decoration: TextFieldDecorator('Goal'),
+              initialValue: selectedGoal.title,
+              onChanged: (newString) {
+                setState(() {
+                  selectedGoal.title = newString;
+                });
+              }
+            )
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
@@ -33,17 +45,45 @@ class _GoalDetailed extends State<GoalDetailed> {
                   });
                 }),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-                onPressed: () {
-                  _selectedDate().then((newDate) {
-                    if (newDate != null) {
-                      selectedGoal.goalDate = newDate;
-                    }
-                  });
-                },
-                child: Text(selectedGoal.goalDate.toString())),
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                    onPressed: () {
+                      _selectedDate().then((newDate) {
+                        if (newDate != null) {
+                          selectedGoal.goalDate = newDate;
+                        }
+                      });
+                    },
+                    child: Text('Goal Date: ${selectedGoal.goalDate.toString()}')),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                    onPressed: () {
+                      _selectedDate().then((newDate) {
+                        if (newDate != null) {
+                          selectedGoal.stretchDate = newDate;
+                        }
+                      });
+                    },
+                    child: Text('Goal Date: ${selectedGoal.stretchDate.toString()}')),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                    onPressed: () {
+                      _selectedDate().then((newDate) {
+                        if (newDate != null) {
+                          selectedGoal.goalDate = newDate;
+                        }
+                      });
+                    },
+                    child: Text('Completed Date: ${selectedGoal.completeDate == null ? 'Uncompleted' : selectedGoal.completeDate.toString()}')),
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
