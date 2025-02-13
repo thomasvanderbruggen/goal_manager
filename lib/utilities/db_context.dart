@@ -61,7 +61,8 @@ class DBContext {
 
   Future<int> insertGoal(GoalModel g) async {
     final db = await instance.database; 
-    return await db.insert('Goal', g.toDB()); 
+
+    return await db.insert('Goal', g.toDB(), conflictAlgorithm: ConflictAlgorithm.replace); 
   }
   
   Future<List<GoalModel>> getAllGoals() async {
@@ -69,7 +70,7 @@ class DBContext {
     final res = await db.query('Goal', orderBy: 'ID asc'); 
     final res1 = await db.query('GoalMetrics', orderBy: 'ID desc'); 
 
-    // Get Goals and Metrics from DB
+    // Get Goals and Metrics from DBff
     // Build Metrics
     // ---Get list of metrics per Goal, then send to GoalController to build
     Map<int, List<GoalMetrics>> metrics = { 
@@ -100,6 +101,7 @@ class DBContext {
 
   Future<void> deleteGoal(GoalModel g) async {
     final db = await instance.database;
+    await db.delete('GoalMetrics', where: 'goalId = ?', whereArgs: [g.id]); 
     await db.delete('Goal', where: 'id = ?', whereArgs: [g.id]); 
   }
 

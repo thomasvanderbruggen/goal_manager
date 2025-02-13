@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:goal_manager/models/goal_metrics.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'models/goal_model.dart';
@@ -40,6 +41,7 @@ class MyAppState extends ChangeNotifier {
   var selectedPage = 0;
   DBContext db = DBContext.instance;
   late GoalModel selectedGoal;
+  late GoalMetrics selectedMetric;
 
   void setSelectedPage(int page) {
     selectedPage = page;
@@ -73,6 +75,8 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GoalsPage();
       case 3:
         page = GoalDetailed();
+      case 4: 
+        page = MetricDetailed(); 
       default:
         throw UnimplementedError('No widget for $selectedIndex');
     }

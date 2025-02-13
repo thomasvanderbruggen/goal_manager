@@ -37,7 +37,7 @@ class GoalsPage extends StatelessWidget {
   Scaffold allGoalsDisplay(List<GoalModel>? allGoals, MyAppState appState) {
     return Scaffold(
         appBar: AppBar(title: Text('Goals')),
-        body: allGoals == null
+        body: allGoals == null || allGoals.isEmpty
             ? SizedBox(
                 height: 300,
                 width: 300,
@@ -56,10 +56,13 @@ class GoalsPage extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
+              appState.selectedGoal = GoalModel.appGen('', '', [], DateTime(1901, 1,1), DateTime(1901,1,1), null, ''); 
+              appState.setSelectedPage(3); 
+
               //appState.db.resetDatabase().then((value) { appState.refresh(); },
-              appState.db.insertTestData().then((value) {
-                appState.refresh();
-              });
+              // appState.db.insertTestData().then((value) {
+              //   appState.refresh();
+              // });
               // appState.db.insertGoal(GoalModel.appGen('Title', 'Description', ['1,2,3'], DateTime.now(), 'Monthly'));
               // appState.refresh();
             }));

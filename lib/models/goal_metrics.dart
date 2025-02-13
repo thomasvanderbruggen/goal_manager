@@ -11,12 +11,17 @@ class GoalMetrics {
 
   Map<String, Object?> toDB() {
 
-    return {
-      'id': id, 
+    Map<String, Object?> map = {
       'goalId': goalId, 
       'description': description, 
       'percentCompleted': percentCompleted
     }; 
+
+    if (id != null) {
+      map['id'] = id; 
+    }
+
+    return map; 
   }
 
 }

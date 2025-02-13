@@ -17,15 +17,21 @@ class GoalModel {
 
 
   Map<String, Object?> toDB() { 
-    return  {
-      'id': id, 
+    
+    Map<String, Object?> map = {
       'title': title, 
       'description': description,
       'goalDate': goalDate.toIso8601String(),
       'stretchDate': stretchDate.toIso8601String(), 
       'completeDate': completeDate?.toIso8601String(),
       'goalType': goalType
-    };
+    }; 
+
+    if (id != null) {
+      map['id'] = id; 
+    }
+
+    return map; 
   }
 
 }
