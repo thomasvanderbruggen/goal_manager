@@ -1,14 +1,23 @@
+import 'package:goal_manager/models/task_completion.dart';
+
 class TaskModel {
-  int? id; 
+  int id; 
   String title; 
   String? description; 
   String frequency; 
   bool shouldBeReminded; 
+  List<TaskCompletionModel> completions; 
 
 
-  TaskModel(this.id, this.title, this.description, this.frequency, this.shouldBeReminded); 
+  TaskModel({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.frequency,
+    required this.shouldBeReminded,
+    required this.completions
+  }); 
 
-  TaskModel.appGen(this.title, this.description, this.frequency, this.shouldBeReminded); 
 
   Map<String, Object?> toDB() {
 
@@ -19,10 +28,19 @@ class TaskModel {
       'shouldBeRemdined': shouldBeReminded ? 1 : 0,
     };
 
-    if (id != null) {
-      map['id'] = id; 
-    }
+
     return map; 
+  }
+
+  factory TaskModel.fromDB(Map<String, dynamic> map, List<TaskCompletionModel> completions) {
+    return TaskModel(
+      id: map['id'], 
+      title: map['title'], 
+      description: map['description'], 
+      frequency: map['frequency'], 
+      shouldBeReminded: map['shouldBeReminded'] == 1,
+      completions: completions
+    ); 
   }
 
 

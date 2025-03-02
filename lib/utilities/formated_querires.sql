@@ -20,6 +20,20 @@ CREATE TABLE GoalMetrics (
     FOREIGN KEY (goalid) REFERENCES Goal(id) ON DELETE CASCADE
 );
 
+CREATE TABLE Tasks (
+    id INTEGER PRIMARY KEY, 
+    title TEXT, 
+    description TEXT,
+    frequency TEXT, 
+    shouldBeReminded INTEGER
+)
+
+CREATE TABLE TaskCompletion (
+    id INTEGER PRIMARY KEY, 
+    taskId INTEGER, 
+    completedDate TEXT,
+    description TEXT
+)
 
 
 INSERT INTO Goal (id, title, description, goalDate, stretchDate, completeDate, goalType) 
