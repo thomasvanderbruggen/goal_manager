@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:goal_manager/models/goal_metrics.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'models/goal_model.dart';
@@ -26,11 +25,14 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        title: 'Namer App',
+        title: "W I P",
+        themeMode: ThemeMode.dark,
         theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.yellow),
-        ),
+            brightness: Brightness.dark,
+            colorSchemeSeed: Colors.amber,
+            dialogBackgroundColor: Colors.black,
+            scaffoldBackgroundColor: Colors.black,                       
+            useMaterial3: true),
         home: MyHomePage(),
       ),
     );
@@ -39,12 +41,16 @@ class MyApp extends StatelessWidget {
 
 class MyAppState extends ChangeNotifier {
   var selectedPage = 0;
+  var selectedIndex = 0;
   DBContext db = DBContext.instance;
   late GoalModel selectedGoal;
-  late GoalMetrics selectedMetric;
-
   void setSelectedPage(int page) {
     selectedPage = page;
+    var tempIdx = page; 
+    if (page == 0) tempIdx = 1;
+    if (page == 1) tempIdx = 0; 
+    if (page == 3) tempIdx = 2;
+    selectedIndex = tempIdx;
     notifyListeners();
   }
 
@@ -64,9 +70,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
-    var selectedIndex = appState.selectedPage;
+    var selectedIndex = appState.selectedIndex; 
+    var selectedPage = appState.selectedPage; 
+
     Widget page;
-    switch (selectedIndex) {
+    switch (selectedPage) {
       case 0:
         page = DefaultPage();
       case 1:
@@ -75,18 +83,41 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GoalsPage();
       case 3:
         page = GoalDetailed();
-      case 4: 
-        page = MetricDetailed(); 
       default:
         throw UnimplementedError('No widget for $selectedIndex');
     }
+
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: page, 
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: selectedIndex,
+          onTap: (index) {
+            setState(() {
+              var tempIdx = index; 
+              if (index == 0) tempIdx = 1;
+              if (index == 1) tempIdx = 0; 
+
+              index = tempIdx;  
+              appState.setSelectedPage(index); 
+            }); 
+          }, 
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.task), label: 'Tasks'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.sports_score), label: 'Goals'),
+        ],
+        ),
+      ); 
+    }); 
+
     return LayoutBuilder(builder: (context, constraints) {
       return Scaffold(
         body: Row(
           children: [
             SafeArea(
               child: NavigationRail(
-                extended: constraints.maxWidth >= 600,
+                extended: false,
                 destinations: [
                   NavigationRailDestination(
                     icon: Icon(Icons.home),
@@ -99,7 +130,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   NavigationRailDestination(
                       icon: Icon(Icons.sports_score), label: Text('Goals'))
                 ],
-                selectedIndex: selectedIndex == 3 ? 2 : selectedIndex,
+                selectedIndex: selectedIndex == 3 || selectedIndex == 4
+                    ? 2
+                    : selectedIndex,
                 onDestinationSelected: (value) {
                   appState.setSelectedPage(value);
                 },
@@ -114,6 +147,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       );
-    });
+    }
+    
+    );
   }
 }

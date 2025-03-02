@@ -1,37 +1,56 @@
-
-import 'package:goal_manager/models/goal_metrics.dart';
-
 class GoalModel {
-  int? id;
-  String title; 
-  String description; 
-  List<GoalMetrics>? metrics; 
-  DateTime goalDate; 
-  DateTime stretchDate;
-  DateTime? completeDate;
-  String? goalType; 
+  int id;
+  String title;
+  String description;
+  String goalType;
+  DateTime goalEndDate;
+  bool isCompleted;
+  int  progress;
+  int priority;
+  String category;
 
-  GoalModel(this.id, this.title, this.description, this.metrics, this.goalDate, this.stretchDate, this.completeDate, this.goalType); 
+  GoalModel({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.goalType,
+    required this.goalEndDate,
+    required this.isCompleted,
+    required this.progress,
+    required this.priority,
+    required this.category,
+  });
 
-  GoalModel.appGen(this.title, this.description, this.metrics, this.goalDate, this.stretchDate, this.completeDate, this.goalType);
-
-
-  Map<String, Object?> toDB() { 
-    
-    Map<String, Object?> map = {
-      'title': title, 
+  Map<String, Object?> toDB() {
+    final map = {
+      'title': title,
       'description': description,
-      'goalDate': goalDate.toIso8601String(),
-      'stretchDate': stretchDate.toIso8601String(), 
-      'completeDate': completeDate?.toIso8601String(),
-      'goalType': goalType
-    }; 
-
-    if (id != null) {
-      map['id'] = id; 
+      'goalType': goalType,
+      'goalEndDate': goalEndDate.toIso8601String(),
+      'isCompleted': isCompleted ? 1 : 0,
+      'progress': progress,
+      'priority': priority,
+      'category': category,
+    };
+    
+    if (id > 0) {
+      map['id'] = id;
     }
-
-    return map; 
+    
+    return map;
   }
 
+  factory GoalModel.fromDB(Map<String, dynamic> map) {
+    return GoalModel(
+      id: map['id'],
+      title: map['title'],
+      description: map['description'],
+      goalType: map['goalType'],
+      goalEndDate: DateTime.parse(map['goalEndDate']),
+      isCompleted: map['isCompleted'] == 1,
+      progress: map['progress'],
+      priority: map['priority'],
+      category: map['category'],
+    );
+  }
 }

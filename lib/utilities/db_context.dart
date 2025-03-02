@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'package:goal_manager/controllers/goal_metric_controller.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import '../controllers/goal_controller.dart';
 import '../models/goal_model.dart';
 import 'db_context_queries.dart'; 
-
-import '../models/goal_metrics.dart';
 
 class DBContext {
   DBContext._init(); 
@@ -29,9 +25,18 @@ class DBContext {
 
   Future _onCreate(Database db, int version) async {
     return await db.execute('''
-    CREATE TABLE Goal (id INTEGER PRIMARY KEY autoincrement, title TEXT, description TEXT, metrics TEXT, goalDate TEXT, goalType TEXT); 
-    INSERT INTO Goal (title, description, metrics, goalDate, goalType) 
-    VALUES ('Goal 1', 'Desc 1', 'Metric1,Metric2,Metric3', '2025-02-10T23:24:56+0000', 'Monthly'), ('Goal 2', 'Desc 2', 'Metric1,Metric2,Metric3', '2025-02-10T23:24:56+0000', 'Monthly'), ('Goal 3', 'Desc 3', 'Metric1,Metric2,Metric3', '2025-02-10T23:24:56+0000', 'Monthly')
+    CREATE TABLE Goal (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    goalType TEXT NOT NULL,
+    goalEndDate TEXT NOT NULL,
+    isCompleted INTEGER NOT NULL CHECK (isCompleted IN (0,1)),
+    progress INTEGER NOT NULL,
+    priority INTEGER NOT NULL,
+    category TEXT NOT NULL
+); 
+
 '''    );
   } 
 
@@ -60,36 +65,27 @@ class DBContext {
   }
 
   Future<int> insertGoal(GoalModel g) async {
-    final db = await instance.database; 
+    int goalId = 0; 
 
-    return await db.insert('Goal', g.toDB(), conflictAlgorithm: ConflictAlgorithm.replace); 
+    if (g.id > 0) {
+      await updateGoal(g);
+      goalId = g.id;  
+    }else {
+      final db = await instance.database; 
+      goalId = await db.insert('Goal', g.toDB(), conflictAlgorithm: ConflictAlgorithm.replace);  
+    }
+
+    return goalId; 
   }
   
   Future<List<GoalModel>> getAllGoals() async {
     final db = await instance.database;
     final res = await db.query('Goal', orderBy: 'ID asc'); 
-    final res1 = await db.query('GoalMetrics', orderBy: 'ID desc'); 
-
-    // Get Goals and Metrics from DBff
-    // Build Metrics
-    // ---Get list of metrics per Goal, then send to GoalController to build
-    Map<int, List<GoalMetrics>> metrics = { 
-
-    }; 
-
-    for (var metric in res1) {
-      GoalMetrics gm = GoalMetricsController.buildFromDB(metric); 
-      if (!metrics.keys.contains(gm.goalId)) {
-        metrics[gm.goalId!] = []; 
-      }
-      metrics[gm.goalId!]!.add(gm); 
-    }
 
     List<GoalModel> goals = []; 
-
-    for (var goal in res) {
-      goals.add(GoalController.buildGoalModel(goal, metrics[goal['id']])); 
-    }
+    res.forEach((goal) {
+      goals.add(GoalModel.fromDB(goal)); 
+    }); 
 
     return goals;
   }
@@ -103,28 +99,6 @@ class DBContext {
     final db = await instance.database;
     await db.delete('GoalMetrics', where: 'goalId = ?', whereArgs: [g.id]); 
     await db.delete('Goal', where: 'id = ?', whereArgs: [g.id]); 
-  }
-
-  Future<int> insertGoalMetric(GoalMetrics gm) async {
-    final db = await instance.database;
-
-    if ((await db.query('Goal', where: 'id = ?', whereArgs: [gm.goalId])).isEmpty) {
-      throw Exception("Metrics failed to insert because Goal has not been inserted"); 
-    }
-
-    return await db.insert('GoalMetric', gm.toDB());
-  }
-
-  Future<List<Map<String, Object?>>> getAllMetrics() async {
-    final db = await instance.database; 
-
-    return await db.query('GoalMetric', orderBy: 'ID desc'); 
-  }
-
-  Future<List<Map<String, Object?>>> getAllMetricsPerGoal(int goalId) async {
-    final db = await instance.database; 
-
-    return await db.query('GoalMetric', where: 'goalId = ?', whereArgs: [goalId]); 
   }
 
 }
