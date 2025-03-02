@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/goal_model.dart';
@@ -42,7 +40,7 @@ class _GoalDetailed extends State<GoalDetailed> {
       _progress = selectedGoal.progress;
     }
     bool editable = true; 
-  selectedGoal.goalEndDate.isBefore(DateTime.now()) ? editable = false : editable = true; 
+  selectedGoal.goalEndDate.isBefore(DateTime.now().subtract(Duration(days: 1))) ? editable = false : editable = true; 
   final Color backgroundColor = Colors.black87; // Deep dark background
   final Color fieldFillColor = Colors.grey[850]!; // Slightly lighter dark for fields
   final Color textColor = Colors.white70; // Slightly muted white for text

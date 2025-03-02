@@ -39,6 +39,22 @@ class DBContext {
     category TEXT NOT NULL
 ); 
 
+CREATE TABLE Tasks (
+    id INTEGER PRIMARY KEY, 
+    title TEXT, 
+    description TEXT,
+    frequency TEXT, 
+    shouldBeReminded INTEGER
+); 
+
+CREATE TABLE TaskCompletion (
+    id INTEGER PRIMARY KEY, 
+    taskId INTEGER, 
+    completedDate TEXT,
+    description TEXT
+); 
+
+
 '''    );
   } 
 
@@ -48,8 +64,11 @@ class DBContext {
 
     await db.execute('DROP TABLE IF EXISTS GoalMetrics'); 
     await db.execute('DROP TABLE IF EXISTS Goal'); 
+    await db.execute('DROP TABLE IF EXISTS Tasks'); 
+    await db.execute('DROP TABLE IF EXISTS TaskCompletion'); 
 
-    await db.execute(createGoal); 
+    await _initalizeDB(); 
+
 
     await db.execute(insertTestGoal); 
 
@@ -141,7 +160,7 @@ class DBContext {
       taskId = t.id; 
     }else { 
       final db = await instance.database; 
-      taskId = await db.insert('Task', t.toDB(), conflictAlgorithm: ConflictAlgorithm.replace); 
+      taskId = await db.insert('Tasks', t.toDB(), conflictAlgorithm: ConflictAlgorithm.replace); 
     }
 
     return taskId; 
@@ -150,7 +169,7 @@ class DBContext {
   Future<List<TaskModel>> getAllTasks() async {
     final db = await instance.database; 
     final taskRes =  db.query('Tasks', orderBy: 'ID desc');
-    final taskCompletionRes = db.query('TaskCompltion', orderBy: 'taskId asc, ID desc'); 
+    final taskCompletionRes = db.query('TaskCompletion', orderBy: 'taskId asc, ID desc', where: 'completedDate LIKE ?', whereArgs: ['%${DateTime.now().year}%']); 
 
     var responses = await Future.wait([taskRes, taskCompletionRes]);
 

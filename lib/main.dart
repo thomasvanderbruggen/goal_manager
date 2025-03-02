@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'models/goal_model.dart';
+import 'models/task_model.dart';
 import 'views/all.dart';
 import 'utilities/db_context.dart';
+import 'views/tasks/task_form.dart';
 
 void main() {
   if (Platform.isWindows || Platform.isLinux) {
@@ -44,11 +46,12 @@ class MyAppState extends ChangeNotifier {
   var selectedIndex = 0;
   DBContext db = DBContext.instance;
   late GoalModel selectedGoal;
+  late TaskModel selectedTask; 
   void setSelectedPage(int page) {
     selectedPage = page;
     var tempIdx = page; 
     if (page == 0) tempIdx = 1;
-    if (page == 1) tempIdx = 0; 
+    if (page == 1 || page == 4) tempIdx = 0; 
     if (page == 3) tempIdx = 2;
     selectedIndex = tempIdx;
     notifyListeners();
@@ -83,6 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GoalsPage();
       case 3:
         page = GoalDetailed();
+      case 4: 
+        page = TaskForm(); 
       default:
         throw UnimplementedError('No widget for $selectedIndex');
     }
@@ -110,45 +115,5 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ); 
     }); 
-
-    return LayoutBuilder(builder: (context, constraints) {
-      return Scaffold(
-        body: Row(
-          children: [
-            SafeArea(
-              child: NavigationRail(
-                extended: false,
-                destinations: [
-                  NavigationRailDestination(
-                    icon: Icon(Icons.home),
-                    label: Text('Home'),
-                  ),
-                  NavigationRailDestination(
-                    icon: Icon(Icons.favorite),
-                    label: Text('Favorites'),
-                  ),
-                  NavigationRailDestination(
-                      icon: Icon(Icons.sports_score), label: Text('Goals'))
-                ],
-                selectedIndex: selectedIndex == 3 || selectedIndex == 4
-                    ? 2
-                    : selectedIndex,
-                onDestinationSelected: (value) {
-                  appState.setSelectedPage(value);
-                },
-              ),
-            ),
-            Expanded(
-              child: Container(
-                color: Theme.of(context).colorScheme.primaryContainer,
-                child: page,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    
-    );
   }
 }

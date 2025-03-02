@@ -1,10 +1,11 @@
 import 'package:goal_manager/models/task_completion.dart';
+import 'package:goal_manager/utilities/enums.dart';
 
 class TaskModel {
   int id; 
   String title; 
-  String? description; 
-  String frequency; 
+  String description; 
+  Frequency frequency; 
   bool shouldBeReminded; 
   List<TaskCompletionModel> completions; 
 
@@ -24,8 +25,8 @@ class TaskModel {
     Map<String, Object?> map = {
       'title': title, 
       'description': description, 
-      'frequency': frequency,
-      'shouldBeRemdined': shouldBeReminded ? 1 : 0,
+      'frequency': frequency.name,
+      'shouldBeReminded': shouldBeReminded ? 1 : 0,
     };
 
 
@@ -33,11 +34,19 @@ class TaskModel {
   }
 
   factory TaskModel.fromDB(Map<String, dynamic> map, List<TaskCompletionModel> completions) {
+    Frequency freq = Frequency.Daily; 
+    switch (map['frequency']) {
+      case 'Weekly': 
+        freq = Frequency.Weekly; 
+      case 'Monthly': 
+        freq = Frequency.Monthly; 
+    }
+    
     return TaskModel(
       id: map['id'], 
       title: map['title'], 
       description: map['description'], 
-      frequency: map['frequency'], 
+      frequency:  freq, 
       shouldBeReminded: map['shouldBeReminded'] == 1,
       completions: completions
     ); 

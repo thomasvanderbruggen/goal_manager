@@ -39,7 +39,7 @@ class GoalsPage extends StatelessWidget {
     // Color variables
     final Color backgroundColor = Colors.black87!; // Subtle background color
     final Color appBarBackgroundColor = Colors.black87; // Transparent AppBar
-    final Color emptyStateIconColor = Colors.red!; // Icon color for empty state
+    final Color emptyStateIconColor = Color.fromARGB(255, 233, 193, 108); // Icon color for empty state
     final Color emptyStateTextColor =
         Colors.grey[600]!; // Text color for empty state
     // final Color cardGradientEnd = Colors.amber[700]!; // Start of gradient for cards
@@ -203,6 +203,11 @@ class GoalsPage extends StatelessWidget {
   Widget titleDisplay(GoalModel goal) {
     Color color = Color.fromARGB(255, 233, 193, 108);
     String textString = goal.title;
+
+    // If goal is completed = green check
+    // If goal isn't completed and due date is < 10 days out mostly drained timer
+    // If goal isn't completed but due date is > 10 days out mostly filled timer
+    // if goal isn't completed and due dats has passed, red X
     if (goal.isCompleted) {
       textString += ' ✅';
       color = Colors.green[200]!;
